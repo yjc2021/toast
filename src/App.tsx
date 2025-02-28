@@ -1,34 +1,56 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
+import { useToast } from "./core/toast";
+import { ToastPosition } from "./core/types";
 
+const options = [
+  "top-left",
+  "top-center",
+  "top-right",
+  "bottom-left",
+  "bottom-center",
+  "bottom-right",
+];
 function App() {
-  const [count, setCount] = useState(0);
-
+  const { showToastMessage } = useToast();
+  const [position, setPosition] = useState<ToastPosition>("top-center");
+  const [delay, setDelay] = useState(3000);
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="flex h-full w-full flex-col items-center justify-center">
+      <div className="flex items-start gap-12">
+        <div onChange={(e) => setPosition(e.target.value)}>
+          <h3 className="text-xl font-bold">Position</h3>
+          {options.map((option) => (
+            <div key={option} className="mb-1 flex items-center space-x-2">
+              <input type="radio" id={option} name="position" value={option} className="mr-2" />
+              <label htmlFor={option} className="cursor-pointer">
+                {option}
+              </label>
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-col items-start">
+          <label htmlFor="delay" className="text-xl font-bold">
+            Delay(ms)
+          </label>
+          <input
+            type="number"
+            id="delay"
+            value={delay}
+            onChange={(e) => setDelay(Number(e.target.value))}
+            className="rounded-md border"
+          />
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+      <button
+        className="cursor-pointer"
+        onClick={() => {
+          showToastMessage("toast created", "default", position, delay);
+        }}
+      >
+        add toast
+      </button>
+    </div>
   );
 }
 
